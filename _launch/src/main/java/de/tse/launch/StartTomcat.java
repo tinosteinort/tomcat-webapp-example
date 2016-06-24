@@ -9,6 +9,8 @@ import org.apache.catalina.webresources.StandardRoot;
 
 import javax.servlet.ServletException;
 import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -17,25 +19,81 @@ import java.nio.file.Paths;
  */
 public class StartTomcat {
 
-    public static void main(String[] args) throws ServletException, LifecycleException {
+    private static final int TOMCAT_PORT = 8123;
+    private static final String WAR_FILE_NAME = "mywebapp.war";
+    private static final String CONTEXT_PATH = "/mywebapp";
+
+    public static void main(String[] args) throws ServletException, LifecycleException, URISyntaxException, IOException {
+
+        /**
+         * If you want to run this main from your IDE, configure your RunConfig with '-DrunFromIDE' as VM Option
+         *
+         * In the case of 'runFromIDE' it is required, that the 'target/classes' Folders exist. Otherwise this may occur:
+         *     java.util.concurrent.ExecutionException: org.apache.catalina.LifecycleException: Failed to initialize component
+         *     ...
+         *     Caused by: java.lang.IllegalArgumentException: The directory specified by base and internal path [C:\...\tomcat-webapp-example\webapp-code\target\classes]\[] does not exist.
+         * Run 'mvn compile' before the first run, to prevent this Error.
+         */
+        new StartTomcat().start();
+    }
+
+    public void start() throws ServletException, LifecycleException, URISyntaxException, IOException {
 
         System.setProperty("tomcat.util.scan.DefaultJarScanner.jarsToSkip", "*");
         System.setProperty("org.apache.catalina.startup.ContextConfig.jarsToSkip", "*");
         System.setProperty("org.apache.catalina.startup.TldConfig.jarsToSkip", "*");
 
         final Tomcat tomcat = new Tomcat();
-        tomcat.setPort(8123);
+        tomcat.setPort(TOMCAT_PORT);
 
-        final Path absolutePath = Paths.get("webapp/src/main/webapp").normalize();
-        final StandardContext context = (StandardContext) tomcat.addWebapp("/webapp", absolutePath.normalize().toAbsolutePath().toString());
+        final RunMode mode = getRunMode();
 
+        final Path absolutePath = detectPath(mode);
 
-        final File additionWebInfClasses = new File("webapp-code/target/classes");
-        final WebResourceRoot resources = new StandardRoot(context);
-        resources.addPreResources(new DirResourceSet(resources, "/WEB-INF/classes", additionWebInfClasses.getAbsolutePath(), "/"));
-        context.setResources(resources);
+        final StandardContext context = (StandardContext) tomcat.addWebapp(CONTEXT_PATH, absolutePath.toString());
+
+        if (mode == RunMode.FROM_IDE) {
+
+            final WebResourceRoot resources = new StandardRoot(context);
+
+            // This is required for each Module, which contains web relevant Classes, of this Project
+            final String additionalClassesFolder = new File("webapp-code/target/classes").getAbsolutePath();
+            resources.addPreResources(new DirResourceSet(resources, "/WEB-INF/classes", additionalClassesFolder, "/"));
+
+            context.setResources(resources);
+        }
 
         tomcat.start();
         tomcat.getServer().await();
+
+        // While starting the embedded Tomcat with the WAR, an Error orrcus:
+        //      SEVERE: Exception fixing docBase for context [/mywebapp]
+        //      java.io.IOException: Unable to create the directory [...\webapps\mywebapp]
+        //      at org.apache.catalina.startup.ExpandWar.expand(ExpandWar.java:115)
+        //      at org.apache.catalina.startup.ContextConfig.fixDocBase(ContextConfig.java:618)
+        //      at org.apache.catalina.startup.ContextConfig.beforeStart(ContextConfig.java:744)
+        //      at org.apache.catalina.startup.ContextConfig.lifecycleEvent(ContextConfig.java:307)
+        //      ...
+        //
+        // When the 'webapps/mywebapp' Folder is created manually, the Exception will not occur, but
+        //  the Applications does not run.
+    }
+
+    private RunMode getRunMode() {
+        if (System.getProperty("runFromIDE") != null) {
+            return RunMode.FROM_IDE;
+        }
+        return RunMode.WITH_WAR;
+    }
+
+    private Path detectPath(final RunMode mode) {
+        switch (mode) {
+            case FROM_IDE:
+                return Paths.get("webapp/src/main/webapp").normalize().toAbsolutePath();
+            case WITH_WAR:
+                return Paths.get(WAR_FILE_NAME).normalize().toAbsolutePath();
+            default:
+                throw new IllegalArgumentException("No Path for RunMode supported");
+        }
     }
 }

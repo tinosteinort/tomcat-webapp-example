@@ -12,6 +12,11 @@
 
     <name>Tomcat Maven WebApp</name>
 
+    <properties>
+        <!-- The Name of the WAR File, without Extension -->
+        <nameOfTheWar>mywebapp</nameOfTheWar>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>de.tse</groupId>
@@ -20,6 +25,6 @@
     </dependencies>
 
     <build>
-        <finalName>webapp</finalName>
+        <finalName>${nameOfTheWar}</finalName>
     </build>
 </project>
