@@ -26,9 +26,10 @@ public class StartTomcat {
     public static void main(String[] args) throws ServletException, LifecycleException, URISyntaxException, IOException {
 
         /**
+         * # Start from IDE #
          * If you want to run this main from your IDE, configure your RunConfig with '-DrunFromIDE' as VM Option
          *
-         *
+         * # Info #
          * Currently the module 'webapp-code' has to be referenced in the 'webapp/pom.xml' and in the '_launch/pom.xml'.
          *
          *   If 'webapp/pom.xml' is not defined as 'war' in the Dependency Management in the 'pom.xml',
@@ -37,6 +38,10 @@ public class StartTomcat {
          *
          *   Possible Solution is to create a 'de.tse:webapp-modules:pom' module, which references the 'webapp-code'.
          *    This new Module can than be used in '_launch/pom.xml' and 'webapp/pom.xml'
+         *
+         * # URLs #
+         * http://localhost:8123/mywebapp/
+         * http://localhost:8123/mywebapp/myservlet
          */
         new StartTomcat().start();
     }
