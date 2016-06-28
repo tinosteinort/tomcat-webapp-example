@@ -28,11 +28,15 @@ public class StartTomcat {
         /**
          * If you want to run this main from your IDE, configure your RunConfig with '-DrunFromIDE' as VM Option
          *
-         * In the case of 'runFromIDE' it is required, that the 'target/classes' Folders exist. Otherwise this may occur:
-         *     java.util.concurrent.ExecutionException: org.apache.catalina.LifecycleException: Failed to initialize component
-         *     ...
-         *     Caused by: java.lang.IllegalArgumentException: The directory specified by base and internal path [C:\...\tomcat-webapp-example\webapp-code\target\classes]\[] does not exist.
-         * Run 'mvn compile' before the first run, to prevent this Error.
+         *
+         * Currently the module 'webapp-code' has to be referenced in the 'webapp/pom.xml' and in the '_launch/pom.xml'.
+         *
+         *   If 'webapp/pom.xml' is not defined as 'war' in the Dependency Management in the 'pom.xml',
+         *    the 'webapp-code' has only be defined in 'webapp/pom.xml'. But in this case, 'mvn package'
+         *    does not work, because it is looking for 'de.tse:webapp:jar' and not for 'de.tse:webapp:war'
+         *
+         *   Possible Solution is to create a 'de.tse:webapp-modules:pom' module, which references the 'webapp-code'.
+         *    This new Module can than be used in '_launch/pom.xml' and 'webapp/pom.xml'
          */
         new StartTomcat().start();
     }
@@ -51,17 +55,6 @@ public class StartTomcat {
         final Path absolutePath = detectPath(mode);
 
         final StandardContext context = (StandardContext) tomcat.addWebapp(CONTEXT_PATH, absolutePath.toString());
-
-        if (mode == RunMode.FROM_IDE) {
-
-            final WebResourceRoot resources = new StandardRoot(context);
-
-            // This is required for each Module, which contains web relevant Classes, of this Project
-            final String additionalClassesFolder = new File("webapp-code/target/classes").getAbsolutePath();
-            resources.addPreResources(new DirResourceSet(resources, "/WEB-INF/classes", additionalClassesFolder, "/"));
-
-            context.setResources(resources);
-        }
 
         tomcat.start();
         tomcat.getServer().await();

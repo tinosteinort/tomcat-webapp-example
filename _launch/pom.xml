@@ -39,6 +39,10 @@
             <artifactId>webapp</artifactId>
             <type>war</type>
         </dependency>
+        <dependency>
+            <groupId>de.tse</groupId>
+            <artifactId>webapp-code</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
