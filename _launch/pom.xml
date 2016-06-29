@@ -41,7 +41,8 @@
         </dependency>
         <dependency>
             <groupId>de.tse</groupId>
-            <artifactId>webapp-code</artifactId>
+            <artifactId>webapp-modules</artifactId>
+            <type>pom</type>
         </dependency>
     </dependencies>
 
