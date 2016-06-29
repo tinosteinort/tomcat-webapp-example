@@ -10,10 +10,10 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>webapp</module>
-        <module>webapp-modules</module>
         <module>webapp-code</module>
-        <module>_launch</module>
+        <module>webapp-modules</module>
+        <module>webapp</module>
+        <module>webapp-launcher</module>
     </modules>
 
     <properties>
