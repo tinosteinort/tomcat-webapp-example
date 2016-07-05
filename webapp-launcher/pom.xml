@@ -7,7 +7,7 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>_launch</artifactId>
+    <artifactId>webapp-launcher</artifactId>
     <packaging>jar</packaging>
 
     <name>Embedded Tomcat Launcher</name>

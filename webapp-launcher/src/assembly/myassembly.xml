@@ -22,7 +22,7 @@
             <includes>
                 <!--
                     Include all JARs (should be only one)
-                        -> _launch-1.0-SNAPSHOT-client.jar
+                        -> webapp-launcher-1.0-SNAPSHOT-launcher.jar
                     from the build directory
                 -->
                 <include>*.jar</include>
@@ -49,8 +49,8 @@
             <excludes>
                 <!--
                     Because of the maven-jar-plugin, the name of the
-                      _launch-1.0-SNAPSHOT.jar changes to
-                      _launch-1.0-SNAPSHOT-client.jar
+                      webapp-launcher-1.0-SNAPSHOT.jar changes to
+                      webapp-launcher-1.0-SNAPSHOT-<classifier>.jar
 
                     The maven-jar-plugin sets the classpath and the
                     mainclass Attributes in the MANIFEST.MF of the jar. The
@@ -58,14 +58,14 @@
                     the change of the name of the jar.
 
                     The maven-assembly-plugin is looking for the original
-                        _launch-1.0-SNAPSHOT-.jar name of the jar. Because
+                        webapp-launcher-1.0-SNAPSHOT.jar name of the jar. Because
                     this file is not found, an error occurs.
 
                     Solution:
                         1. Exclude Artifact
                         2. Collect jar file by a include of a fileSet
                 -->
-                <exclude>de.tse:_launch</exclude>
+                <exclude>de.tse:webapp-launcher</exclude>
 
                 <!--
                     If this module is not excluded, we got

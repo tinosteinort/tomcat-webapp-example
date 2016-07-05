@@ -31,9 +31,7 @@ public class StartTomcat {
          *
          * # Info #
          * All webapp related Modules (like 'webapp-code') should be referenced by the 'webapp-modules' Module,
-         *  because 'webapp-modules' is referenced by 'webapp' and '_launch'.
-         * The maven-shade-plugin is used, to create a 'final jar' which contains all dependencies (even the
-         *  the Tomcat).
+         *  because 'webapp-modules' is referenced by 'webapp' and 'webapp-launcher'.
          *
          * # URLs #
          * http://localhost:8123/mywebapp/
