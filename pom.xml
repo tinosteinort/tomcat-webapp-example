@@ -22,7 +22,14 @@
         <version.maven-compiler-plugin>3.2</version.maven-compiler-plugin>
         <version.maven-assembly-plugin>2.6</version.maven-assembly-plugin>
         <version.maven-jar-plugin>3.0.2</version.maven-jar-plugin>
-        <version.tomcat>8.0.28</version.tomcat>
+
+        <!--
+            Updated version from 8.0.28 because of CVE-2018-8034
+            This demo does not work after update anymore
+         -->
+        <!--<version.tomcat>8.0.28</version.tomcat>-->
+        <version.tomcat>9.0.12</version.tomcat>
+
         <version.junit>3.8.1</version.junit>
         <version.javax.servlet-api>3.1.0</version.javax.servlet-api>
     </properties>
